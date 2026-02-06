@@ -1,0 +1,51 @@
+Create a docker-compose.yml file:
+
+version: '3.8'
+
+services:
+  bnra:
+    build: .
+    container_name: bnra_container
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+Run it with:
+
+docker-compose up -d
+# Use the official Ubuntu image as the base
+FROM ubuntu:22.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    curl \
+    python3 \
+    python3-pip \
+    openssh-server \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Python packages
+RUN pip3 install requests json logging
+
+# Create a working directory
+WORKDIR /app
+
+# Copy the attack detection script into the container
+COPY bnra_attack_detection.py /app/bnra_attack_detection.py
+
+# Copy Splunk Alert XML configuration (optional)
+COPY bnra_attack_alert.xml /app/bnra_attack_alert.xml
+
+# Expose port for SSH (if needed)
+EXPOSE 22
+
+# Start SSH and run the detection script
+CMD ["sh", "-c", "service ssh start && python3 /app/bnra_attack_detection.py"]
