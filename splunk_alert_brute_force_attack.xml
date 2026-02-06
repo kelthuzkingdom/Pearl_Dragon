@@ -1,0 +1,37 @@
+<alert>
+  <label>BNRA Brute Force Alert</label>
+  <description>Real-time alert for detecting Brute Force attacks in the BNRA system</description>
+  <condition>
+    <eval>index = "bnra" AND sourcetype = "bnra_attack_logs"</eval>
+  </condition>
+  <search>
+    <query>index=bnra sourcetype=bnra_attack_logs (brute_force OR "brute force" OR "failed login" OR "too many attempts")</query>
+    <earliest>-5m</earliest>
+    <latest>now</latest>
+  </search>
+  <action>
+    <email>
+      <to>security-team@example.com</to>
+      <subject>BNRA Brute Force Alert: &lt;$alert.message&gt;</subject>
+      <body>
+        A Brute Force attack has been detected in the BNRA system: &lt;$alert.message&gt;.
+
+        Details: &lt;$alert.summary&gt;.
+
+        Timestamp: &lt;$alert.time&gt;.
+
+        Please investigate immediately.
+      </body>
+    </email>
+  </action>
+  <threshold>
+    <count>1</count>
+    <compare>greater than</compare>
+  </threshold>
+  <trigger>
+    <type>realtime</type>
+  </trigger>
+  <ack>
+    <type>manual</type>
+  </ack>
+</alert>

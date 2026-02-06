@@ -1,0 +1,37 @@
+<alert>
+  <label>BNRA SQL Injection Alert</label>
+  <description>Real-time alert for detecting SQL Injection attacks in the BNRA system</description>
+  <condition>
+    <eval>index = "bnra" AND sourcetype = "bnra_attack_logs"</eval>
+  </condition>
+  <search>
+    <query>index=bnra sourcetype=bnra_attack_logs (sql_injection OR "sql injection" OR "UNION SELECT" OR "UNION ALL")</query>
+    <earliest>-5m</earliest>
+    <latest>now</latest>
+  </search>
+  <action>
+    <email>
+      <to>security-team@example.com</to>
+      <subject>BNRA SQL Injection Alert: &lt;$alert.message&gt;</subject>
+      <body>
+        A SQL Injection attack has been detected in the BNRA system: &lt;$alert.message&gt;.
+
+        Details: &lt;$alert.summary&gt;.
+
+        Timestamp: &lt;$alert.time&gt;.
+
+        Please investigate immediately.
+      </body>
+    </email>
+  </action>
+  <threshold>
+    <count>1</count>
+    <compare>greater than</compare>
+  </threshold>
+  <trigger>
+    <type>realtime</type>
+  </trigger>
+  <ack>
+    <type>manual</type>
+  </ack>
+</alert>

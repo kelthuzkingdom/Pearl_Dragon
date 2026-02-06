@@ -1,0 +1,37 @@
+<alert>
+  <label>BNRA Lateral Movement Alert</label>
+  <description>Real-time alert for detecting Lateral Movement in the BNRA system</description>
+  <condition>
+    <eval>index = "bnra" AND sourcetype = "bnra_attack_logs"</eval>
+  </condition>
+  <search>
+    <query>index=bnra sourcetype=bnra_attack_logs (lateral_movement OR "domain trust" OR "kerberos" OR "pass-the-hash" OR "NTLM relay")</query>
+    <earliest>-5m</earliest>
+    <latest>now</latest>
+  </search>
+  <action>
+    <email>
+      <to>security-team@example.com</to>
+      <subject>BNRA Lateral Movement Alert: &lt;$alert.message&gt;</subject>
+      <body>
+        A Lateral Movement attack has been detected in the BNRA system: &lt;$alert.message&gt;.
+
+        Details: &lt;$alert.summary&gt;.
+
+        Timestamp: &lt;$alert.time&gt;.
+
+        Please investigate immediately.
+      </body>
+    </email>
+  </action>
+  <threshold>
+    <count>1</count>
+    <compare>greater than</compare>
+  </threshold>
+  <trigger>
+    <type>realtime</type>
+  </trigger>
+  <ack>
+    <type>manual</type>
+  </ack>
+</alert>

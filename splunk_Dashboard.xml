@@ -1,0 +1,112 @@
+<dashboard>
+  <label>BNRA Attack Dashboard</label>
+  <description>Real-time attack detection and monitoring dashboard for BNRA system</description>
+  <row>
+    <panel>
+      <title>Total SQL Injection Attacks</title>
+      <type>singlevalue</type>
+      <search>
+        <query>index=bnra sourcetype=bnra_attack_logs (sql_injection OR "sql injection" OR "UNION SELECT" OR "UNION ALL")</query>
+        <earliest>-5m</earliest>
+        <latest>now</latest>
+      </search>
+      <value>count</value>
+      <format>count</format>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Total Brute Force Attacks</title>
+      <type>singlevalue</type>
+      <search>
+        <query>index=bnra sourcetype=bnra_attack_logs (brute_force OR "brute force" OR "failed login" OR "too many attempts")</query>
+        <earliest>-5m</earliest>
+        <latest>now</latest>
+      </search>
+      <value>count</value>
+      <format>count</format>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Total Port Scanning Attempts</title>
+      <type>singlevalue</type>
+      <search>
+        <query>index=bnra sourcetype=bnra_attack_logs (port_scan OR "open port" OR "open_port")</query>
+        <earliest>-5m</earliest>
+        <latest>now</latest>
+      </search>
+      <value>count</value>
+      <format>count</format>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Total Zero-Day Exploits</title>
+      <type>singlevalue</type>
+      <search>
+        <query>index=bnra sourcetype=bnra_attack_logs (zero_day OR "zero-day" OR "buffer overflow" OR "privilege escalation")</query>
+        <earliest>-5m</earliest>
+        <latest>now</latest>
+      </search>
+      <value>count</value>
+      <format>count</format>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Total Phishing Attempts</title>
+      <type>singlevalue</type>
+      <search>
+        <query>index=bnra sourcetype=bnra_attack_logs (phishing OR "phishing attempt" OR "malicious link")</query>
+        <earliest>-5m</earliest>
+        <latest>now</latest>
+      </search>
+      <value>count</value>
+      <format>count</format>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Attack Timeline</title>
+      <type>single</type>
+      <search>
+        <query>index=bnra sourcetype=bnra_attack_logs</query>
+        <earliest>-5m</earliest>
+        <latest>now</latest>
+      </search>
+      <drilldown>view</drilldown>
+      <option name="row.0">time</option>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Attack Types by Count</title>
+      <type>chart</type>
+      <search>
+        <query>index=bnra sourcetype=bnra_attack_logs</query>
+        <earliest>-5m</earliest>
+        <latest>now</latest>
+      </search>
+      <option name="charting.chart">bar</option>
+      <option name="charting.drilldown">all</option>
+      <option name="row.0">source</option>
+      <option name="row.1">count</option>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Attack Confidence Levels</title>
+      <type>chart</type>
+      <search>
+        <query>index=bnra sourcetype=bnra_attack_logs</query>
+        <earliest>-5m</earliest>
+        <latest>now</latest>
+      </search>
+      <option name="charting.chart">donut</option>
+      <option name="charting.drilldown">all</option>
+      <option name="row.0">confidence</option>
+      <option name="row.1">count</option>
+    </panel>
+  </row>
+</dashboard>

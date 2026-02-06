@@ -17,8 +17,8 @@ from cryptography.fernet import Fernet
 from flask import Flask, request, jsonify
 import twilio.rest
 import pyautogui
-import pywin32
-import pyaudio
+
+
 import numpy as np
 from PIL import Image, ImageGrab
 import datetime
