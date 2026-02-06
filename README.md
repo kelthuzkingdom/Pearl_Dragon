@@ -49,3 +49,29 @@ This file defines the structure and type of attack alerts.
 📦 Logs
 
 All logs are saved in the logs/bnra_logs.txt file.
+
+📜 Dockerfile
+
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install -r requirements.txt
+
+CMD ["./integration/bnra_control.sh"]
+
+📜 docker-compose.yml (Optional)
+
+version: '3.8'
+
+services:
+  bnra:
+    build: .
+    container_name: bnra_container
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
