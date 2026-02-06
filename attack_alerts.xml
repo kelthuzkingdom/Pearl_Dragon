@@ -1,0 +1,8 @@
+<alert>
+  <name>BNRA Attack Alert</name>
+  <description>Detects and alerts on suspicious network traffic and system anomalies.</description>
+  <severity>High</severity>
+  <type>Network</type>
+  <source>bnra_attack_detection.py</source>
+  <action>Send alert to Slack, email, or log file.</action>
+</alert>
