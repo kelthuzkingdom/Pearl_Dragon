@@ -1,0 +1,63 @@
+import json
+import requests
+import time
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Configuration
+SPLUNK_API_URL = "https://splunk.example.com:8089/services/Alerts"
+SPLUNK_AUTH = ("admin", "your_password")
+EMAIL_RECIPIENT = "security-team@example.com"
+ATTACK_TYPES = [
+    "sql_injection", "brute_force", "port_scan", "zero_day", "phishing", "lateral_movement"
+]
+
+def send_splunk_alert(alert_type, message, summary):
+    payload = {
+        "label": f"BNRA {alert_type} Alert",
+        "description": f"Real-time alert for detecting {alert_type} attacks",
+        "condition": {
+            "eval": "index = 'bnra' AND sourcetype = 'bnra_attack_logs'"
+        },
+        "search": {
+            "query": f"index=bnra sourcetype=bnra_attack_logs ({alert_type} OR \"{alert_type}\" OR \"UNION SELECT\" OR \"UNION ALL\")",
+            "earliest": "-5m",
+            "latest": "now"
+        },
+        "action": {
+            "email": {
+                "to": EMAIL_RECIPIENT,
+                "subject": f"BNRA {alert_type} Alert: {message}",
+                "body": f"A {alert_type} attack has been detected: {message}.\n\nDetails: {summary}.\n\nTimestamp: {time.ctime()}\n\nPlease investigate immediately."
+            }
+        },
+        "threshold": {
+            "count": 1,
+            "compare": "greater than"
+        },
+        "trigger": {"type": "realtime"},
+        "ack": {"type": "manual"}
+    }
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(SPLUNK_API_URL, auth=SPLUNK_AUTH, headers=headers, data=json.dumps(payload))
+    if response.status_code == 200:
+        logging.info(f"Alert for {alert_type} sent successfully.")
+    else:
+        logging.error(f"Failed to send alert for {alert_type}. Status code: {response.status_code}")
+
+def main():
+    # Example usage: simulate attack detection
+    attack_type = "sql_injection"
+    message = "SQL Injection detected in the BNRA system."
+    summary = "The system has been targeted with a SQL Injection attack."
+
+    send_splunk_alert(attack_type, message, summary)
+
+if __name__ == "__main__":
+    main()
