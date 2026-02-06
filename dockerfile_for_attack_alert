@@ -1,0 +1,24 @@
+Create a docker-compose.yml file:
+
+version: '3.8'
+
+services:
+  bnra:
+    build: .
+    container_name: bnra_container
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+Run it with:
+
+docker-compose up -d
+<alert>
+  <name>BNRA Attack Alert</name>
+  <description>Detects and alerts on suspicious network traffic and system anomalies.</description>
+  <severity>High</severity>
+  <type>Network</type>
+  <source>bnra_attack_detection.py</source>
+  <action>Send alert to Slack, email, or log file.</action>
+</alert>
